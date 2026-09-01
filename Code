@@ -1,0 +1,22 @@
+-----------------------------------------------------------------------------------------------
+  #LASSO Estimation
+  install.packages("glmnet")  # only if not already installed
+library(glmnet)
+
+
+x <- as.matrix(WORKING_FILE[, c( "B", "C","D", "E", "F", "G", "H",)])  # predictors
+y <- WORKING_FILE$A  # response variable
+
+lasso_model <- glmnet(x, y, alpha = 1)
+coef(lasso_model)
+
+cv_lasso <- cv.glmnet(x, y, alpha = 1)
+plot(cv_lasso)
+
+#Then extract:
+cv_lasso$lambda.min      # λ giving minimum cross-validated error
+cv_lasso$lambda.1se      # simpler model within 1 std error (more regularized)
+
+
+best_lambda <- cv_lasso$lambda.min
+coef(cv_lasso, s = "lambda.min")
